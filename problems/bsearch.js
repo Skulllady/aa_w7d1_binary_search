@@ -7,47 +7,69 @@ const evenNums = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 const empty = [];
 *******************************************************************/
 
-
 /*******************************************************************
 BINARY SEARCH VERSION 1:
 
 Write a Recursive Binary Search that returns a Boolean value indicating if
 targetNum is within the nums array.
 *******************************************************************/
-
 const recurBSearch = (nums, targetNum) => {
-  // Base Case: if nums has no length, return false because we've run out of 
+  // Base Case: if nums has no length, return false because we've run out of
   // items to search and haven't found targetNum
-
+  if (nums.length === 0) {
+    return false;
+  }
   // determine the slice point (ie the 'middle' of the array).
-
+  let middleIdx = Math.floor(nums.length / 2);
   // create "left half" and "right half" arrays, not including the slice point.
-
+  let leftHalf = nums.slice(0, middleIdx);
+  let rightHalf = nums.slice(middleIdx + 1);
   // if targetNum is less than the value in the array at slice point,
   // return this search on the left half
-
+  if (targetNum < nums[middleIdx]) {
+    //then targetNum < midle => check left side:
+    return recurBSearch(leftHalf, targetNum);
+  }
   // if targetNum is greater than the value in the array at slice point,
   //return this search on the right half
-
+  else if (targetNum > nums[middleIdx]) {
+    return recurBSearch(rightHalf, targetNum);
+  }
   // if it's not greater than or less than (i.e. 'else'),
   // we know it's equal so return true
+  else if (targetNum === nums[middleIdx]) {
+    return true;
+  }
 }
-
-
 /*******************************************************************
 BINARY SEARCH VERSION 2:
 
 Write an Iterative Binary Search that returns a Boolean value indicating if
 targetNum is within the nums array.
 *******************************************************************/
-
 const iterBSearch = (nums, targetNum) => {
   // Save references to indices at the beginning, middle, and end of the array
   // into variables: lowerIdx, midIdx, and upperIdx
-
+  //beginning
+  let lowerIdx = 0;
+  let midIdx;
+  let upperIdx = nums.length - 1;
   // while the lowerIdx is less than or equal to the upperIdx, there are still
   // values to be searched
-
+  while (lowerIdx <= upperIdx) {
+    midIdx = Math.floor((lowerIdx + upperIdx) / 2);
+    if (targetNum > nums[midIdx]) {
+      //check target on the right
+      lowerIdx = midIdx + 1;
+    }
+    else if (targetNum < nums[midIdx]) {
+      //check target on the left
+      upperIdx = midIdx - 1;
+    }
+    else if (targetNum === nums[midIdx]) {
+      return true;
+    }
+  }
   // reassign the midIdx to the the middle of the new lower and upper indices
   // Hint: This is the sum of lower and upper, divided by 2
 
@@ -59,13 +81,13 @@ const iterBSearch = (nums, targetNum) => {
   // between the current upper and current middle, so reassign the upperIdx
   // to the middle (ie cut off the right half of the array)
 
-  // if it's not greater than or less than (ie 'else'), we have found our target 
+  // if it's not greater than or less than (ie 'else'), we have found our target
   // at the midIdx and can return true and stop iterating.
 
   // if we finish our while loop and haven't returned true, we've looked over
   // the entire array and didn't find targetNum, so return false
+  return false;
 }
-
 
 /*******************************************************************
 BINARY SEARCH VERSION 3:
@@ -73,20 +95,38 @@ BINARY SEARCH VERSION 3:
 Write a Recursive Binary Search that returns the Index value of targetNum if it
 is in the nums array, and -1 if it is not found.
 *******************************************************************/
-
+// let nums = [1, 2, 3]; //target 1 // target 2 // target 3
 const recurBSearchIdx = (nums, targetNum) => {
   // this implementation is identical to version 1, except rather than
   // returning true/false, return the index where you found the item
   // (instead of true) or -1 (instead of false).
-
   // HINT: the index value you return should be the index in the ORIGINAL array
-  // and not the index of the sliced array. You'll notice this problem arise 
-  // on the 'right half' recursion. in that, try saving the return value of the 
-  // recursive call into a variable, and adding it to the current stack-frame's 
+  // and not the index of the sliced array. You'll notice this problem arise
+  // on the 'right half' recursion. in that, try saving the return value of the
+  // recursive call into a variable, and adding it to the current stack-frame's
   // midIdx + 1.
+  let middleIndex = Math.floor(nums.length / 2) //accounts for even numbers
+  //base case
+  if (nums.length === 0) return -1;
+  //if target > middle => new middle is to the right
+  if (targetNum > nums[middleIndex]) {
+    let stackingIndex = recurBSearchIdx(nums.slice(middleIndex + 1), targetNum)
+    //check if there is a -1 else count indices
+    if (stackingIndex === -1) return -1
+    else return middleIndex + stackingIndex + 1;
+  }
+  //if target < middle => new high is middle
+  if (targetNum < nums[middleIndex]) {
+    stackingIndex = middleIndex;
+    return recurBSearchIdx(nums.slice(0, middleIndex), targetNum)
+  }
+  //if middle has target
+  if (targetNum === nums[middleIndex]) {
+    return middleIndex;
+  }
 }
-
-
+// let result = recurBSearchIdx(nums, 3)
+// console.log(result);
 /*******************************************************************
 BINARY SEARCH VERSION 4:
 
@@ -102,10 +142,10 @@ const recurBSearchIdxV2 = (nums, targetNum, low = null, hi = null) => {
   what part of the original array is being searched. if they meet each other
   we know we have searched the entire array.(NOTE this function has FOUR params)
 
-  Base Case: 
+  Base Case:
   if low is equal to high and we haven't found targetNum, then return -1 to
   indicate that the value was not found.
-  
+
   Determine the slice point (the sum of low and hi, divided by 2)
 
   If targetNum is less than nums[slicepoint], then
@@ -114,7 +154,7 @@ const recurBSearchIdxV2 = (nums, targetNum, low = null, hi = null) => {
 
   If targetNum is less than nums[slicepoint], then
   return the binary search of nums where low is the middle of the array, and hi
-  is the end of the array 
+  is the end of the array
 
   If it's not greater and not less (i.e. 'else'), return the slice point because
   we have found our value!
