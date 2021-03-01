@@ -95,7 +95,7 @@ BINARY SEARCH VERSION 3:
 Write a Recursive Binary Search that returns the Index value of targetNum if it
 is in the nums array, and -1 if it is not found.
 *******************************************************************/
-// let nums = [1, 2, 3]; //target 1 // target 2 // target 3
+
 const recurBSearchIdx = (nums, targetNum) => {
   // this implementation is identical to version 1, except rather than
   // returning true/false, return the index where you found the item
@@ -110,6 +110,7 @@ const recurBSearchIdx = (nums, targetNum) => {
   if (nums.length === 0) return -1;
   //if target > middle => new middle is to the right
   if (targetNum > nums[middleIndex]) {
+    // console.log(middleIndex);
     let stackingIndex = recurBSearchIdx(nums.slice(middleIndex + 1), targetNum)
     //check if there is a -1 else count indices
     if (stackingIndex === -1) return -1
@@ -117,23 +118,24 @@ const recurBSearchIdx = (nums, targetNum) => {
   }
   //if target < middle => new high is middle
   if (targetNum < nums[middleIndex]) {
-    stackingIndex = middleIndex;
-    return recurBSearchIdx(nums.slice(0, middleIndex), targetNum)
+    let stackingIndex = recurBSearchIdx(nums.slice(0, middleIndex), targetNum)
+    if (stackingIndex === -1) return -1
+    else return stackingIndex;
   }
   //if middle has target
   if (targetNum === nums[middleIndex]) {
     return middleIndex;
   }
 }
-// let result = recurBSearchIdx(nums, 3)
-// console.log(result);
+
+
 /*******************************************************************
 BINARY SEARCH VERSION 4:
 
 Write a Recursive Binary Search that returns the Index value of targetNum if it
 is in the nums array, and -1 if it is not found.
 *******************************************************************/
-
+let nums = [1, 2, 3, 4, 5]; //target 1 // target 2 // target 3
 const recurBSearchIdxV2 = (nums, targetNum, low = null, hi = null) => {
   /*
   This implementation is recursive, but borrows the low/hi logic from Version 2
@@ -161,7 +163,8 @@ const recurBSearchIdxV2 = (nums, targetNum, low = null, hi = null) => {
   */
 }
 
-
+let result = recurBSearchIdxV2(nums, 4)
+console.log(result);
 /*******************************************************************
 BINARY SEARCH VERSION 5:
 
